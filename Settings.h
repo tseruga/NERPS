@@ -1,9 +1,15 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+
 class Settings
 {
 public:
+	Settings();
+
 	//Delta T for particle updating
 	double step;
 
@@ -12,6 +18,12 @@ public:
 
 	//Number of particles
 	long long numParticles;
+
+	//File name of output
+	std::string filename;
+
+private:
+	void read();
 };
 
 #endif

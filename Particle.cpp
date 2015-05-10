@@ -6,12 +6,13 @@ Particle::Particle(std::default_random_engine& rng,
 			 	   std::uniform_real_distribution<double>& rngTheta,
 			       std::uniform_real_distribution<double>& rngPhi,
 			       std::uniform_real_distribution<double>& rngVel,
-			       Settings settings_in)
+			       std::uniform_real_distribution<double>& rngEn,
+			       Settings* settings_in)
 {
 	//Set the initial position
 	double theta = rngTheta(rng);
 	double phi = rngPhi(rng);
-	double rho = settings.sphereR;
+	double rho = settings->sphereR;
 
 	//Convert to cartersian coords
 	x = (rho*sin(theta)*cos(phi));
@@ -35,6 +36,9 @@ Particle::Particle(std::default_random_engine& rng,
 	vel[2] = zV;
 	velocity = vel;
 
+	//Energy
+	energy = rngEn(rng);
+
 	//Bring it to life
 	alive = true;
 	absorbed = false;
@@ -47,13 +51,13 @@ Particle::Particle(std::default_random_engine& rng,
 void Particle::Update()
 {
 	//Move the particle relative to its velocity and step
-	x = x + velocity[0]*settings.step;
-	y = y + velocity[1]*settings.step;
-	z = z + velocity[2]*settings.step;
+	x = x + velocity[0]*settings->step;
+	y = y + velocity[1]*settings->step;
+	z = z + velocity[2]*settings->step;
 
 	//Check if we're out of bounds
 	double rho = sqrt(x*x + y*y + z*z);
-	if(rho > settings.sphereR)
+	if(rho > settings->sphereR)
 	{
 		alive = false;
 		return;

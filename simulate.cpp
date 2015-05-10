@@ -13,32 +13,23 @@
 using namespace std;
 
 static inline void loadingBar(long long ran, 
-							 long long totalToRun);
+							  long long totalToRun);
 
 int main()
 {
-	//[TODO] Remove this
-	cout << "Input name of file to write to: ";
-	string filename;
-	cin >> filename;
-
 	/////////////////Init Settings////////////////////
-	//[TODO] Get settings from text file
 	Settings settings;
-	settings.numParticles = 4000000;
-	settings.sphereR = 5;
-	settings.step = 0.05;
 
 	//Initilization of output file
-	ofstream out(filename.c_str());
+	ofstream out(settings.filename.c_str());
 
 	//Initialization of rng
 	default_random_engine rng(time(NULL));
-
-	//For efficiency, calculate all base rng ahead of time
 	uniform_real_distribution<double> rngTheta(0, 2*M_PI);
 	uniform_real_distribution<double> rngPhi(0, M_PI);
 	uniform_real_distribution<double> rngVel(-1.,1.);
+	//[TODO] Change this to the proper distribution for energy of particles
+	uniform_real_distribution<double> rngEn(1, 2e13);
 
 	//Initialization of macrobodies
 	vector<Macrobody*> macrobodies;
@@ -60,10 +51,12 @@ int main()
 		loadingBar(i, settings.numParticles);
 
 		//Spawn a particle
-		Particle particle(rng, rngTheta, rngPhi, rngVel, settings);
+		Particle particle(rng, rngTheta, rngPhi, rngVel, rngEn, &settings);
 
 		while(particle.isAlive())
 		{
+			Macrobody::EventType lastEvent = Macrobody::NoEvent;
+
 			//Check if particle is in contact with something
 			for(auto body : macrobodies)
 			{
@@ -71,33 +64,32 @@ int main()
 				if(body->isIn(particle))
 				{
 					//Then calculate what happens
-					body->Event(particle, rng, rngVel); 
+					lastEvent = body->Event(particle, rng, rngVel); 
 					//As of now, a particle can only be in one body
 					//[TODO] Add priorities to macrobodies
 					break; 
 				}
 			}
 
-			//If particle has been absorbed
-			if(!particle.isAlive())
+			//Add to counters for certain events.
+			//Update particle on scatter or no event.
+			switch (lastEvent)
 			{
-				++absorptionCount;
-				scatterCount += particle.getScatterCount();
-
-				//Print to file here
-				out << particle << "\n";
-				break;
-			}
-			else
-			{
-				//Step the particle forward in time
-				particle.Update();
+				case Macrobody::Absorb:
+					++absorptionCount;
+					//Print to file here
+					out << particle << "\n";
+					break;
+				case Macrobody::Scatter:
+					++scatterCount;
+					//No break, as we want scatters to update too
+				default:
+					particle.Update();
 			}
 
 			//Particle entered the graveyard
-			if(!particle.isAlive())
+			if(lastEvent != Macrobody::Absorb && !particle.isAlive())
 			{
-				scatterCount += particle.getScatterCount();
 				++graveyardCount;
 			}
 		}
@@ -105,7 +97,7 @@ int main()
 
 	cout << "\r" << flush;
 	cout << "\n\nProcess was completed successfully\n";
-	cout << "Results were written to file: " << filename << "\n\n";
+	cout << "Results were written to file: " << settings.filename << "\n\n";
 	cout << "----------Statistics----------\n";
 	cout << "Particles ran: " << settings.numParticles << endl;
 	cout << "Lost to graveyard: " << graveyardCount << endl;
@@ -116,7 +108,7 @@ int main()
 }
 
 static inline void loadingBar(long long ran, 
-						 	 long long totalToRun)
+						 	  long long totalToRun)
 {
 	//We're going to update on whole percentages
 	if(ran % (totalToRun/100 + 1) != 0) return;

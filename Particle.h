@@ -17,7 +17,8 @@ public:
 			 std::uniform_real_distribution<double>& rngTheta,
 			 std::uniform_real_distribution<double>& rngPhi,
 			 std::uniform_real_distribution<double>& rngVel,
-			 Settings settings_in);
+			 std::uniform_real_distribution<double>& rngEn,
+			 Settings* settings_in);
 
 	////Public member functions////
 	
@@ -45,11 +46,12 @@ public:
 
 private:
 	////Private member variables////
-	Settings settings;
+	Settings* settings;
 	double x;
 	double y;
 	double z;
 	std::vector<double> velocity;
+	double energy;
 	bool alive;
 	bool absorbed;
 	long long scatterCount;
