@@ -6,8 +6,9 @@
 
 #include "Particle.h"
 #include "Settings.h"
+#include "Macrobody.h"
 
-class Cylinder
+class Cylinder: public Macrobody
 {
 public:
 	//Ctor
@@ -18,9 +19,9 @@ public:
 
 	bool isIn(Particle& particle);
 
-	void Event(Particle& particle, 
-			  std::default_random_engine& rng,
-			  std::uniform_real_distribution<double>& prob);
+	Macrobody::EventType Event(Particle& particle, 
+			  				   std::default_random_engine& rng,
+			  				   std::uniform_real_distribution<double>& prob);
 
 private:
 	////Private member variables////

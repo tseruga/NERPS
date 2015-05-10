@@ -201,6 +201,7 @@ help:
 sim.o: simulate.cpp Particle.o Cylinder.o Settings.h
 Particle.o: Particle.h Particle.cpp
 Cylinder.o: Cylinder.h Cylinder.cpp
+Macrobody.o: Macrobody.h Particle.o Settings.h
 ######################
 # TODO (end) #
 ######################

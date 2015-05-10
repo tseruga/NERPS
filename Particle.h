@@ -13,11 +13,11 @@ class Particle
 {
 public:
 	//Ctor
-	Particle(std::vector<double>& xPos,
-			 std::vector<double>& yPos,
-			 std::vector<double>& zPos,
-			 std::vector<std::vector<double>>& vels,
-			 Settings& settings_in);
+	Particle(std::default_random_engine& rng,
+			 std::uniform_real_distribution<double>& rngTheta,
+			 std::uniform_real_distribution<double>& rngPhi,
+			 std::uniform_real_distribution<double>& rngVel,
+			 Settings settings_in);
 
 	////Public member functions////
 	

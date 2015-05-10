@@ -32,9 +32,9 @@ bool Cylinder::isIn(Particle& particle)
 }
 
 
-void Cylinder::Event(Particle& particle, 
-		  			default_random_engine& rng,
-		  			uniform_real_distribution<double>& prob)
+Macrobody::EventType Cylinder::Event(Particle& particle, 
+		  							 default_random_engine& rng,
+		  							 uniform_real_distribution<double>& prob)
 {
 	//Check for absorption
 	double roll = abs(prob(rng)); //Prob here is actually the velocity rng
@@ -45,7 +45,7 @@ void Cylinder::Event(Particle& particle,
 	if(roll < absCS)
 	{
 		particle.Kill();
-		return;
+		return Macrobody::Absorb;
 	}
 
 	//Check for scatter
@@ -56,8 +56,8 @@ void Cylinder::Event(Particle& particle,
 	if(roll < scatCS)
 	{
 		particle.Scatter(rng, prob);
-		return;
+		return Macrobody::Scatter;
 	}
 
-	return;
+	return Macrobody::NoEvent;
 }

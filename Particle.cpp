@@ -2,24 +2,38 @@
 
 using namespace std;
 
-Particle::Particle(vector<double>& xPos,
-		 		   vector<double>& yPos,
-				   vector<double>& zPos,
-		 		   vector<vector<double>>& vels,
-		 		   Settings& settings_in)
+Particle::Particle(std::default_random_engine& rng,
+			 	   std::uniform_real_distribution<double>& rngTheta,
+			       std::uniform_real_distribution<double>& rngPhi,
+			       std::uniform_real_distribution<double>& rngVel,
+			       Settings settings_in)
 {
-	//Set the initial position and velocity
-	x = xPos.back();
-	xPos.pop_back();
+	//Set the initial position
+	double theta = rngTheta(rng);
+	double phi = rngPhi(rng);
+	double rho = settings.sphereR;
 
-	y = yPos.back();
-	yPos.pop_back();
+	//Convert to cartersian coords
+	x = (rho*sin(theta)*cos(phi));
+	y = (rho*sin(theta)*sin(phi));
+	z = (rho*cos(theta));
 
-	z = zPos.back();
-	zPos.pop_back();
+	//Set the initial velocity
+	double xV = rngVel(rng);
+	double yV = rngVel(rng);
+	double zV = rngVel(rng);
 
-	velocity = vels.back();
-	vels.pop_back();
+	//Normalize to unit vector
+	double norm = sqrt(xV*xV + yV*yV + zV*zV);
+	xV = xV / norm;
+	yV = yV / norm;
+	zV = zV / norm;
+
+	vector<double> vel(3);
+	vel[0] = xV;
+	vel[1] = yV;
+	vel[2] = zV;
+	velocity = vel;
 
 	//Bring it to life
 	alive = true;
@@ -58,7 +72,9 @@ void Particle::Scatter(default_random_engine& rng,
 	newVel[1] = rngVel(rng);
 	newVel[2] = rngVel(rng);
 
-	double norm = sqrt( (newVel[0]*newVel[0]) + (newVel[1]*newVel[1]) + (newVel[2]*newVel[2]) );
+	double norm = sqrt( (newVel[0]*newVel[0]) + 
+					    (newVel[1]*newVel[1]) + 
+					    (newVel[2]*newVel[2]) );
 
 	newVel[0] = newVel[0]/norm;
 	newVel[1] = newVel[1]/norm;

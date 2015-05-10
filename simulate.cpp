@@ -8,10 +8,11 @@
 #include "Settings.h"
 #include "Particle.h"
 #include "Cylinder.h"
+#include "Macrobody.h"
 
 using namespace std;
 
-static inline void printInfo(long long ran, 
+static inline void loadingBar(long long ran, 
 							 long long totalToRun);
 
 int main()
@@ -39,85 +40,40 @@ int main()
 	uniform_real_distribution<double> rngPhi(0, M_PI);
 	uniform_real_distribution<double> rngVel(-1.,1.);
 
-	//Vector to hold all the calculated x values
-	vector<double> xPos;
-
-	//Vector to hold all the calculated y values
-	vector<double> yPos;
-
-	//Vector to hold all the calcuated z values
-	vector<double> zPos;
-
-	//Vector to hold all the calculated velocity vectors
-	vector<vector<double>> vels;
-
-	cout << "Initializing particles... \n(this may take a while)\n";
-
-	//Fill the above vectors
-	for(auto i = 0; i < settings.numParticles; ++i)
-	{
-		//Get spherical coords
-		double theta = rngTheta(rng);
-		double phi = rngPhi(rng);
-		double rho = settings.sphereR;
-
-		//Convert to cartersian coords
-		xPos.push_back(rho*sin(theta)*cos(phi));
-		yPos.push_back(rho*sin(theta)*sin(phi));
-		zPos.push_back(rho*cos(theta));
-
-		//Velocity
-		double xV = rngVel(rng);
-		double yV = rngVel(rng);
-		double zV = rngVel(rng);
-
-		//Normalize to unit vector
-		double norm = sqrt(xV*xV + yV*yV + zV*zV);
-		xV = xV / norm;
-		yV = yV / norm;
-		zV = zV / norm;
-
-		vector<double> tempVel(3);
-		tempVel[0] = xV;
-		tempVel[1] = yV;
-		tempVel[2] = zV;
-
-		vels.push_back(tempVel);
-	}
-
-	cout << "Particles initilized. Beginning simulation...\n";
-
-	//Initialization of cylinders
-	vector<Cylinder> cylinders;
+	//Initialization of macrobodies
+	vector<Macrobody*> macrobodies;
 
 	//Single cylinder centered at the origin
 	Cylinder c1(1.75, 0.6, 0, 0, 0, 9.4953, 0.027628, settings);
-	cylinders.push_back(c1);
+	macrobodies.push_back(&c1);
 
 	long long graveyardCount = 0;
 	long long scatterCount = 0;
 	long long absorptionCount = 0;
 
+	cout << "Simulation is now running...\n";
+
+	//The main loop that runs through all particle sims.
 	for(auto i = 0; i < settings.numParticles; ++i)
 	{
-		//Print out some pretty stuff for the user
-		printInfo(i, settings.numParticles);
+		//Print loading bar for the user
+		loadingBar(i, settings.numParticles);
 
 		//Spawn a particle
-		Particle particle(xPos, yPos, zPos, 
-						  vels, settings);
+		Particle particle(rng, rngTheta, rngPhi, rngVel, settings);
 
 		while(particle.isAlive())
 		{
 			//Check if particle is in contact with something
-			for(auto cyl : cylinders)
+			for(auto body : macrobodies)
 			{
 				//If the particle is in contact
-				if(cyl.isIn(particle))
+				if(body->isIn(particle))
 				{
 					//Then calculate what happens
-					cyl.Event(particle, rng, rngVel); 
-					//As of now, a particle can only be in one cylinder
+					body->Event(particle, rng, rngVel); 
+					//As of now, a particle can only be in one body
+					//[TODO] Add priorities to macrobodies
 					break; 
 				}
 			}
@@ -159,7 +115,7 @@ int main()
 	out.close();
 }
 
-static inline void printInfo(long long ran, 
+static inline void loadingBar(long long ran, 
 						 	 long long totalToRun)
 {
 	//We're going to update on whole percentages
