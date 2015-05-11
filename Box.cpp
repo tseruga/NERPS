@@ -1,12 +1,14 @@
-#include "Cylinder.h"
+#include "Box.h"
 
 using namespace std;
 
-Cylinder::Cylinder(double h_in, double r_in, 
-			 	   double x_in, double y_in, double z_in,
-			 	   double absCS_in, double scatCS_in,
-			 	   Settings& settings_in)
-:h(h_in), r(r_in), 
+Box::Box( double x_length_in, 
+			 double y_length_in, double z_length
+			 double x_in, double y_in, double z_in,
+			 double absCS_in, double scatCS_in,
+			 Settings& settings_in)
+:x_l(x_length_in),
+y_l(y_length_in), z_l(z_length_in)
 x(x_in), y(y_in), z(z_in),
 settings(settings_in)
 {
@@ -14,25 +16,40 @@ settings(settings_in)
 	scatCS = 1 - pow(2.71828182845904523536, -scatCS_in*settings.step);
 }
 
-bool Cylinder::isIn(Particle& particle)
+bool Box::isIn(Particle& particle)
 {
-	//Check the x/y plane first
-	double square_dist = (particle.getX()-x) * (particle.getX()-x) +
-						 (particle.getY()-y) * (particle.getY()-y);
+	//Gets the x distance from box center
+	double x_dist = (particle.getX() - x);
 
-	//If particle is within cylinder on x/y plane
-	if(square_dist < r * r)
+	//If the particle is within two x planes
+	if(x_dist * x_dist > ((x_l*x_l)/4))
 	{
-		//If particle is within the z plane of the cylinder
-		if((particle.getZ()-z) < h/2 && (particle.getZ()-z) > -h/2)
-			return true;
+			return false;
 	}
 
-	return false;
+	//Gets the y distance from box
+	double y_dist = (particle.getY() - y);
+
+	//If the particle is within two x planes
+	if(y_dist * y_dist > ((y_l*y_l)/4))
+	{
+			return false;
+	}
+
+	//Gets the y distance from box
+	double z_dist = (particle.getZ() - z);
+
+	//If the particle is within two x planes
+	if(z_dist * z_dist > ((z_l*z_l)/4))
+	{
+			return false;
+	}
+
+	return true;
 }
 
 
-Macrobody::EventType Cylinder::Event(Particle& particle, 
+Macrobody::EventType Box::Event(Particle& particle, 
 		  							 default_random_engine& rng,
 		  							 uniform_real_distribution<double>& prob)
 {

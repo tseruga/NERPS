@@ -1,12 +1,12 @@
-#include "Cylinder.h"
+#include "Sphere.h"
 
 using namespace std;
 
-Cylinder::Cylinder(double h_in, double r_in, 
+Sphere::Sphere( double r_in, 
 			 	   double x_in, double y_in, double z_in,
 			 	   double absCS_in, double scatCS_in,
 			 	   Settings& settings_in)
-:h(h_in), r(r_in), 
+:r(r_in), 
 x(x_in), y(y_in), z(z_in),
 settings(settings_in)
 {
@@ -14,17 +14,16 @@ settings(settings_in)
 	scatCS = 1 - pow(2.71828182845904523536, -scatCS_in*settings.step);
 }
 
-bool Cylinder::isIn(Particle& particle)
+bool Sphere::isIn(Particle& particle)
 {
-	//Check the x/y plane first
+	//Gets the square of the paritcles distance from the sphere
 	double square_dist = (particle.getX()-x) * (particle.getX()-x) +
-						 (particle.getY()-y) * (particle.getY()-y);
+						 (particle.getY()-y) * (particle.getY()-y)
+						 (particle.getZ()-z) * (particle.getZ()-z);
 
-	//If particle is within cylinder on x/y plane
+	//If the particle is within the sphere
 	if(square_dist < r * r)
 	{
-		//If particle is within the z plane of the cylinder
-		if((particle.getZ()-z) < h/2 && (particle.getZ()-z) > -h/2)
 			return true;
 	}
 
@@ -32,7 +31,7 @@ bool Cylinder::isIn(Particle& particle)
 }
 
 
-Macrobody::EventType Cylinder::Event(Particle& particle, 
+Macrobody::EventType Sphere::Event(Particle& particle, 
 		  							 default_random_engine& rng,
 		  							 uniform_real_distribution<double>& prob)
 {
