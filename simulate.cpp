@@ -9,11 +9,12 @@
 #include "Particle.h"
 #include "Cylinder.h"
 #include "Macrobody.h"
+#include "Isotope.h"
 
 using namespace std;
 
-static inline void loadingBar(long long ran, 
-							  long long totalToRun);
+static inline void loadingBar(long long soFar, 
+							  long long total);
 
 int main()
 {
@@ -41,6 +42,11 @@ int main()
 	long long graveyardCount = 0;
 	long long scatterCount = 0;
 	long long absorptionCount = 0;
+
+	////////TESTING//////////
+	Isotope O_16("O_16", 16, "O_16.dat");
+	cout << O_16.getCrossSection(6.0000E+05) << endl;
+
 
 	cout << "Simulation is now running...\n";
 
@@ -107,13 +113,13 @@ int main()
 	out.close();
 }
 
-static inline void loadingBar(long long ran, 
-						 	  long long totalToRun)
+static inline void loadingBar(long long soFar, 
+						 	  long long total)
 {
 	//We're going to update on whole percentages
-	if(ran % (totalToRun/100 + 1) != 0) return;
+	if(soFar % (total/100 + 1) != 0) return;
 
-	double ratio = ran/(double)totalToRun;
+	double ratio = soFar/(double)total;
 
 	int c = ratio * 50 + 1;
 

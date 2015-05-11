@@ -18,7 +18,7 @@ bool Sphere::isIn(Particle& particle)
 {
 	//Gets the square of the paritcles distance from the sphere
 	double square_dist = (particle.getX()-x) * (particle.getX()-x) +
-						 (particle.getY()-y) * (particle.getY()-y)
+						 (particle.getY()-y) * (particle.getY()-y) +
 						 (particle.getZ()-z) * (particle.getZ()-z);
 
 	//If the particle is within the sphere
