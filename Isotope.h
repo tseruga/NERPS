@@ -18,6 +18,12 @@ public:
 	//Given an energy, returns the closest* applicable cross section value
 	double getCrossSection(double searchEnergy);
 
+	//Returns the name of the isotope
+	std::string getName(){return name;}
+
+	//Returns the atomic weight of the isotope
+	int getAtomicWeight(){return atomicWeight;}
+
 private:
 	std::string name;
 	int atomicWeight;

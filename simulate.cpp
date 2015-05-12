@@ -10,6 +10,7 @@
 #include "Cylinder.h"
 #include "Macrobody.h"
 #include "Isotope.h"
+#include "Material.h"
 
 using namespace std;
 
@@ -45,8 +46,12 @@ int main()
 
 	////////TESTING//////////
 	Isotope O_16("O_16", 16, "O_16.dat");
-	cout << O_16.getCrossSection(6.0000E+05) << endl;
-
+	Isotope H_1("H_1", 1, "H_1.dat");
+	Material water("water", 1);
+	water.addIsotope(&O_16, 1);
+	water.addIsotope(&H_1, 2);
+	water.prepare();
+	water.printComposition();
 
 	cout << "Simulation is now running...\n";
 

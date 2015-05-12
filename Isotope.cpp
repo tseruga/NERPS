@@ -34,6 +34,7 @@ double Isotope::getCrossSection(double searchEnergy)
 	auto closest = lower_bound(EnCSVec.begin(), EnCSVec.end(), 
 							   search, Isotope::EnCSSort());
 
+	//Edge case if search is the greatest and there is no greater
 	if(closest == EnCSVec.end())
 		return EnCSVec.back().crossSection;
 
