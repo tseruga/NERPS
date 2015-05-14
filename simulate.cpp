@@ -31,14 +31,7 @@ int main()
 	uniform_real_distribution<double> rngPhi(0, M_PI);
 	uniform_real_distribution<double> rngVel(-1.,1.);
 	//[TODO] Change this to the proper distribution for energy of particles
-	uniform_real_distribution<double> rngEn(1, 2e13);
-
-	//Initialization of macrobodies
-	vector<Macrobody*> macrobodies;
-
-	//Single cylinder centered at the origin
-	Cylinder c1(1.75, 0.6, 0, 0, 0, 9.4953, 0.027628, settings);
-	macrobodies.push_back(&c1);
+	uniform_real_distribution<double> rngEn(0, 10);
 
 	long long graveyardCount = 0;
 	long long scatterCount = 0;
@@ -47,11 +40,18 @@ int main()
 	////////TESTING//////////
 	Isotope O_16("O_16", 16, "O_16.dat");
 	Isotope H_1("H_1", 1, "H_1.dat");
-	Material water("water", 1);
+	Material water("water", 1, 0.00001, &settings);
 	water.addIsotope(&O_16, 1);
 	water.addIsotope(&H_1, 2);
 	water.prepare();
 	water.printComposition();
+
+	//Initialization of macrobodies
+	vector<Macrobody*> macrobodies;
+
+	//Single cylinder centered at the origin
+	Cylinder c1(1.75, 0.6, 0, 0, 0, water, settings);
+	macrobodies.push_back(&c1);
 
 	cout << "Simulation is now running...\n";
 
@@ -66,7 +66,8 @@ int main()
 
 		while(particle.isAlive())
 		{
-			Macrobody::EventType lastEvent = Macrobody::NoEvent;
+			Material::EventType lastEvent = Material::NoEvent;
+			Macrobody* highestPriorityIn = NULL;
 
 			//Check if particle is in contact with something
 			for(auto body : macrobodies)
@@ -75,7 +76,7 @@ int main()
 				if(body->isIn(particle))
 				{
 					//Then calculate what happens
-					lastEvent = body->Event(particle, rng, rngVel); 
+					lastEvent = body->event(particle, rng, rngVel); 
 					//As of now, a particle can only be in one body
 					//[TODO] Add priorities to macrobodies
 					break; 
@@ -86,20 +87,20 @@ int main()
 			//Update particle on scatter or no event.
 			switch (lastEvent)
 			{
-				case Macrobody::Absorb:
+				case Material::Absorb:
 					++absorptionCount;
 					//Print to file here
 					out << particle << "\n";
 					break;
-				case Macrobody::Scatter:
+				case Material::Scatter:
 					++scatterCount;
 					//No break, as we want scatters to update too
 				default:
-					particle.Update();
+					particle.update();
 			}
 
 			//Particle entered the graveyard
-			if(lastEvent != Macrobody::Absorb && !particle.isAlive())
+			if(lastEvent != Material::Absorb && !particle.isAlive())
 			{
 				++graveyardCount;
 			}

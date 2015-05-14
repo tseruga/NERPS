@@ -2,8 +2,13 @@
 
 using namespace std;
 
-Material::Material(string name_in, double density_in)
-:name(name_in), density(density_in){}
+Material::Material()
+{}
+
+Material::Material(string name_in, double density_in, 
+				   double scatterProb_in, Settings* settings_in)
+:name(name_in), density(density_in), 
+	scatterProb(scatterProb_in), settings(settings_in){}
 
 void Material::addIsotope(Isotope* isotope, int abundance)
 {
@@ -56,7 +61,32 @@ Material::EventType Material::event(Particle& particle,
 		  				  			default_random_engine& rng,
 		  				  			uniform_real_distribution<double>& prob)
 {
-	return NoEvent;
+	double roll;
+	//Go through each isotope in the composition
+	//If an event occurs, return that event type
+	for(auto iso : composition)
+	{
+		//Check scatter first
+		roll = abs(prob(rng));
+		//Scatter occurred
+		if(roll < scatterProb)
+			return Material::Scatter;
+
+		//Check absorption
+		roll = abs(prob(rng));
+		double macroCrossSection = iso.atomicDensity * 
+								   iso.isotope->getCrossSection(particle.getEnergy()) *
+								   10e-22;
+
+		double absProb = 1 - pow(2.71828182845904523536, 
+								 -macroCrossSection*settings->step);
+		//Absorption occurred
+		if(roll < absProb)
+			return Material::Absorb;
+
+	}
+
+	return Material::NoEvent;
 }
 
 void Material::printComposition()

@@ -24,18 +24,20 @@ public:
 	
 	//Steps the particle forward in time
 	//Also kills the particle if it goes out of sphere
-	void Update();
+	void update();
 
 	//Calculates a new random velocity vector for the particle
-	void Scatter(std::default_random_engine& rng,
+	void scatter(std::default_random_engine& rng,
 			     std::uniform_real_distribution<double>& rngVel);
 
 	//Kills this particle
-	void Kill(){alive = false;}
+	void kill(){alive = false;}
 
 	bool isAlive(){return alive;}
 
 	long long getScatterCount(){return scatterCount;}
+
+	double getEnergy(){return energy;}
 
 	//Getters
 	double getX() {return x;}

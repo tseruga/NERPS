@@ -15,7 +15,7 @@ public:
 	Box( double x_length_in, 
 			 double y_length_in, double z_length_in,
 			 double x_in, double y_in, double z_in,
-			 double absCS_in, double scatCS_in,
+			 Material material_in,
 			 Settings& settings_in);
 
 	bool isIn(Particle& particle);

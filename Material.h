@@ -5,16 +5,21 @@
 #include <string>
 #include <iostream>
 #include <random>
+#include <cmath>
 
 #include "Particle.h"
 #include "Isotope.h"
+#include "Settings.h"
 
 class Material
 {
 	public:
 		enum EventType {NoEvent, Scatter, Absorb, Graveyard};
 
-		Material(std::string name_in, double density_in);
+		Material();
+
+		Material(std::string name_in, double density_in, 
+				 double scatterProb_in, Settings* settings_in);
 
 		//Adds isotope to the composition of the material
 		void addIsotope(Isotope* isotope, int abundance);
@@ -52,6 +57,10 @@ class Material
 		};
 
 		std::vector<IsotopeInfo> composition;
+
+		double scatterProb;
+
+		Settings* settings;
 };
 
 #endif

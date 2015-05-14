@@ -48,7 +48,7 @@ Particle::Particle(std::default_random_engine& rng,
 	settings = settings_in;
 }
 
-void Particle::Update()
+void Particle::update()
 {
 	//Move the particle relative to its velocity and step
 	x = x + velocity[0]*settings->step;
@@ -66,7 +66,7 @@ void Particle::Update()
 }
 
 
-void Particle::Scatter(default_random_engine& rng,
+void Particle::scatter(default_random_engine& rng,
 			 		   uniform_real_distribution<double>& rngVel)
 {
 	//Calculate a new velocity unit vector
