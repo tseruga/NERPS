@@ -24,6 +24,7 @@ int main()
 
 	//Initilization of output file
 	ofstream out(settings.filename.c_str());
+	ofstream runInfo("runInfo.txt");
 
 	//Initialization of rng
 	default_random_engine rng(time(NULL));
@@ -94,63 +95,64 @@ int main()
 	vacuum.prepare();
 
 	cout << "Materials prepared.\n";
+
 	cout << "Placing macrobodies...\n";
 
 	////MACROBODIES////
 	vector<Macrobody*> macrobodies;
 
 	//Aluminum LD Canister to hold pellets
-	Cylinder ld("LD Canister", 30, 4.75, 0, 0, 0, alum, 2, settings);
+	Cylinder ld("LD_Canister", 30, 4.75, 0, 0, 0, alum, 2, settings);
 	macrobodies.push_back(&ld);
 
 	//Vacuum channels to hold pellets
-	Cylinder channel1("Vacuum Channel #1", 22.5, 0.405, 0, 2.31, 0, vacuum, 3, settings);
+	Cylinder channel1("Vacuum_Channel_#1", 22.5, 0.405, 0, 2.31, 0, vacuum, 3, settings);
 	macrobodies.push_back(&channel1);
 
-	Cylinder channel2("Vacuum Channel #2", 22.5, 0.405, 1.63342, 1.63342, 0, vacuum, 3, settings);
+	Cylinder channel2("Vacuum_Channel_#2", 22.5, 0.405, 1.63342, 1.63342, 0, vacuum, 3, settings);
 	macrobodies.push_back(&channel2);
 
-	Cylinder channel3("Vacuum Channel #3", 22.5, 0.405, 2.31, 0, 0, vacuum, 3, settings);
+	Cylinder channel3("Vacuum_Channel_#3", 22.5, 0.405, 2.31, 0, 0, vacuum, 3, settings);
 	macrobodies.push_back(&channel3);
 
-	Cylinder channel4("Vacuum Channel #4", 22.5, 0.405, 1.63342, -1.63342, 0, vacuum, 3, settings);
+	Cylinder channel4("Vacuum_Channel_#4", 22.5, 0.405, 1.63342, -1.63342, 0, vacuum, 3, settings);
 	macrobodies.push_back(&channel4);
 
-	Cylinder channel5("Vacuum Channel #5", 22.5, 0.405, 0, -2.31, 0, vacuum, 3, settings);
+	Cylinder channel5("Vacuum_Channel_#5", 22.5, 0.405, 0, -2.31, 0, vacuum, 3, settings);
 	macrobodies.push_back(&channel5);
 
-	Cylinder channel6("Vacuum Channel #6", 22.5, 0.405, -1.63342, -1.63342, 0, vacuum, 3, settings);
+	Cylinder channel6("Vacuum_Channel_#6", 22.5, 0.405, -1.63342, -1.63342, 0, vacuum, 3, settings);
 	macrobodies.push_back(&channel6);
 
-	Cylinder channel7("Vacuum Channel #7", 22.5, 0.405, -2.31, 0, 0, vacuum, 3, settings);
+	Cylinder channel7("Vacuum_Channel_#7", 22.5, 0.405, -2.31, 0, 0, vacuum, 3, settings);
 	macrobodies.push_back(&channel7);
 
-	Cylinder channel8("Vacuum Channel #8", 22.5, 0.405, -1.63342, 1.63342, 0, vacuum, 3, settings);
+	Cylinder channel8("Vacuum_Channel_#8", 22.5, 0.405, -1.63342, 1.63342, 0, vacuum, 3, settings);
 	macrobodies.push_back(&channel8);
 
 	//Yb3O2 Pellets placed inside of vacuum channels
-	Cylinder pellet1("Yb3O2 Pellet #1", 21, 0.3, 0, 2.31, -0.875, Yb3O2, 4, settings);
+	Cylinder pellet1("Yb3O2_Pellet_#1", 21, 0.3, 0, 2.31, -0.875, Yb3O2, 4, settings);
 	macrobodies.push_back(&pellet1);
 
-	Cylinder pellet2("Yb3O2 Pellet #2", 21, 0.3, 1.63342, 1.63342, -0.875, Yb3O2, 4, settings);
+	Cylinder pellet2("Yb3O2_Pellet_#2", 21, 0.3, 1.63342, 1.63342, -0.875, Yb3O2, 4, settings);
 	macrobodies.push_back(&pellet2);
 
-	Cylinder pellet3("Yb3O2 Pellet #3", 21, 0.3, 2.31, 0, -0.875, Yb3O2, 4, settings);
+	Cylinder pellet3("Yb3O2_Pellet_#3", 21, 0.3, 2.31, 0, -0.875, Yb3O2, 4, settings);
 	macrobodies.push_back(&pellet3);
 
-	Cylinder pellet4("Yb3O2 Pellet #4", 21, 0.3, 1.63342, -1.63342, -0.875, Yb3O2, 4, settings);
+	Cylinder pellet4("Yb3O2_Pellet_#4", 21, 0.3, 1.63342, -1.63342, -0.875, Yb3O2, 4, settings);
 	macrobodies.push_back(&pellet4);
 
-	Cylinder pellet5("Yb3O2 Pellet #5", 21, 0.3, 0, -2.31, -0.875, Yb3O2, 4, settings);
+	Cylinder pellet5("Yb3O2_Pellet_#5", 21, 0.3, 0, -2.31, -0.875, Yb3O2, 4, settings);
 	macrobodies.push_back(&pellet5);
 
-	Cylinder pellet6("Yb3O2 Pellet #6", 21, 0.3, -1.63342, -1.63342, -0.875, Yb3O2, 4, settings);
+	Cylinder pellet6("Yb3O2_Pellet_#6", 21, 0.3, -1.63342, -1.63342, -0.875, Yb3O2, 4, settings);
 	macrobodies.push_back(&pellet6);
 
-	Cylinder pellet7("Yb3O2 Pellet #7", 21, 0.3, -2.31, 0, -0.875, Yb3O2, 4, settings);
+	Cylinder pellet7("Yb3O2_Pellet_#7", 21, 0.3, -2.31, 0, -0.875, Yb3O2, 4, settings);
 	macrobodies.push_back(&pellet7);
 
-	Cylinder pellet8("Yb3O2 Pellet #8", 21, 0.3, -1.63342, 1.63342, -0.875, Yb3O2, 4, settings);
+	Cylinder pellet8("Yb3O2_Pellet_#8", 21, 0.3, -1.63342, 1.63342, -0.875, Yb3O2, 4, settings);
 	macrobodies.push_back(&pellet8);
 
 	cout << "Macrobodies placed.\n";
@@ -182,7 +184,6 @@ int main()
 						highestPriorityBody = body;
 						highestPriorityNum = body->getPriority();
 					}
-					break; 
 				}
 			}
 
@@ -217,14 +218,18 @@ int main()
 
 	cout << "\r" << flush;
 	cout << "\n\nProcess was completed successfully\n";
-	cout << "Results were written to file: " << settings.filename << "\n\n";
-	cout << "----------Statistics----------\n";
-	cout << "Particles ran: " << settings.numParticles << endl;
-	cout << "Lost to graveyard: " << graveyardCount << endl;
-	cout << "Lost to absorption: " << absorptionCount << endl;
-	cout << "Scatter events: " << scatterCount << endl;
+	cout << "Absorption locations were written to file: " << settings.filename << "\n";
+	cout << "Run info was written to file: runInfo.txt\n";
+
+	runInfo << "Particles ran: " << settings.numParticles << endl;
+	runInfo << "Lost to graveyard: " << graveyardCount << endl;
+	runInfo << "Lost to absorption: " << absorptionCount << endl;
+	runInfo << "Scatter events: " << scatterCount << endl;
+	runInfo << "\n-------------MATERIALS-------------\n" << endl;
+	runInfo << alum << Yb3O2;
 
 	out.close();
+	runInfo.close();
 }
 
 static inline void loadingBar(long long soFar, 

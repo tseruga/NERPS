@@ -33,8 +33,7 @@ class Material
 		  				std::default_random_engine& rng,
 		  				std::uniform_real_distribution<double>& prob);
 
-		//Used for testing
-		void printComposition();
+		friend std::ostream& operator<<(std::ostream& os, const Material& material);
 
 	private:
 

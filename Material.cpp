@@ -92,17 +92,19 @@ Material::EventType Material::event(Particle& particle,
 	return Material::NoEvent;
 }
 
-void Material::printComposition()
+ostream& operator<<(ostream& os, const Material& material)
 {
-	cout << "Material: " << name << endl;
+	os << "------ Material: " << material.name << " ------" << endl;
 
-	for (auto iso : composition)
+	for (auto iso : material.composition)
 	{
-		cout << iso.isotope->getName() << endl;
-		cout << "Abundance: " << iso.abundance << endl;
-		cout << "Relative Abundance: " << iso.relativeAbundance << endl;
-		cout << "Weight Fraction: " << iso.weightFraction << endl;
-		cout << "Atomic Density: " << iso.atomicDensity << endl;
-		cout << endl;
+		os << iso.isotope->getName() << endl;
+		os << "Abundance: " << iso.abundance << endl;
+		os << "Relative Abundance: " << iso.relativeAbundance << endl;
+		os << "Weight Fraction: " << iso.weightFraction << endl;
+		os << "Atomic Density: " << iso.atomicDensity << " atoms/cm^3" << endl;
+		os << endl;
 	}
+
+	return os;
 }
