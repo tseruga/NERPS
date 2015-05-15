@@ -6,11 +6,14 @@ Material::Material()
 {}
 
 Material::Material(string name_in, double density_in, 
-				   double scatterProb_in, Settings* settings_in)
-:name(name_in), density(density_in), 
-	scatterProb(scatterProb_in), settings(settings_in){}
+				   double crossSection, Settings* settings_in)
+:name(name_in), density(density_in), settings(settings_in)
+{
+	scatterProb = 1 - pow(2.71828182845904523536, 
+								 -crossSection*settings->step);
+}
 
-void Material::addIsotope(Isotope* isotope, int abundance)
+void Material::addIsotope(Isotope* isotope, double abundance)
 {
 	//Start the isotope info for the isotope
 	IsotopeInfo iso;
@@ -23,7 +26,7 @@ void Material::addIsotope(Isotope* isotope, int abundance)
 
 void Material::prepare()
 {
-	int totalAbundance = 0;
+	double totalAbundance = 0;
 	for(auto iso : composition)
 	{
 		totalAbundance += iso.abundance;
@@ -76,7 +79,7 @@ Material::EventType Material::event(Particle& particle,
 		roll = abs(prob(rng));
 		double macroCrossSection = iso.atomicDensity * 
 								   iso.isotope->getCrossSection(particle.getEnergy()) *
-								   10e-22;
+								   10e-25;
 
 		double absProb = 1 - pow(2.71828182845904523536, 
 								 -macroCrossSection*settings->step);

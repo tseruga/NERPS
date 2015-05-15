@@ -13,9 +13,11 @@ class Cylinder: public Macrobody
 {
 public:
 	//Ctor
-	Cylinder(double h_in, double r_in, 
+	Cylinder(std::string name_in,
+			 double h_in, double r_in, 
 			 double x_in, double y_in, double z_in,
 			 Material material_in,
+			 int priority_in, 
 			 Settings& settings_in);
 
 	bool isIn(Particle& particle);

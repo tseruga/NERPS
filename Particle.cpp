@@ -6,7 +6,7 @@ Particle::Particle(std::default_random_engine& rng,
 			 	   std::uniform_real_distribution<double>& rngTheta,
 			       std::uniform_real_distribution<double>& rngPhi,
 			       std::uniform_real_distribution<double>& rngVel,
-			       std::uniform_real_distribution<double>& rngEn,
+			       std::piecewise_constant_distribution<double>& rngEn,
 			       Settings* settings_in)
 {
 	//Set the initial position

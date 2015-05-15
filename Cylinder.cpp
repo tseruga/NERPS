@@ -2,15 +2,19 @@
 
 using namespace std;
 
-Cylinder::Cylinder(double h_in, double r_in, 
+Cylinder::Cylinder(string name_in,
+				   double h_in, double r_in, 
 			 	   double x_in, double y_in, double z_in,
 			 	   Material material_in,
+			 	   int priority_in,
 			 	   Settings& settings_in)
 :h(h_in), r(r_in), 
 x(x_in), y(y_in), z(z_in),
 settings(settings_in)
 {
+	name = name_in;
 	material = material_in;
+	priority = priority_in;
 }
 
 bool Cylinder::isIn(Particle& particle)

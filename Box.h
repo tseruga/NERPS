@@ -12,17 +12,15 @@ class Box: public Macrobody
 {
 public:
 	//Ctor
-	Box( double x_length_in, 
-			 double y_length_in, double z_length_in,
-			 double x_in, double y_in, double z_in,
-			 Material material_in,
-			 Settings& settings_in);
+	Box(std::string name_in, 
+		double x_length_in, 
+		double y_length_in, double z_length_in,
+		double x_in, double y_in, double z_in,
+		Material material_in,
+		int priority_in, 
+		Settings& settings_in);
 
 	bool isIn(Particle& particle);
-
-	Macrobody::EventType Event(Particle& particle, 
-			  				   std::default_random_engine& rng,
-			  				   std::uniform_real_distribution<double>& prob);
 
 private:
 	////Private member variables////

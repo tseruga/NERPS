@@ -30,29 +30,130 @@ int main()
 	uniform_real_distribution<double> rngTheta(0, 2*M_PI);
 	uniform_real_distribution<double> rngPhi(0, M_PI);
 	uniform_real_distribution<double> rngVel(-1.,1.);
-	//[TODO] Change this to the proper distribution for energy of particles
-	uniform_real_distribution<double> rngEn(0, 10);
+
+	//Initialization of energy rng (a bit more involved)
+	ifstream weightFile("Weights/weights10k");
+	vector<double> weights;
+	double weight;
+	weightFile >> weight;
+	while(!weightFile.fail())
+	{
+		weights.push_back(weight);
+		weightFile >> weight;
+	}
+
+	vector<double> intervals;
+	for(double i = 0; i <= 10; i = i + 0.001)
+	{
+		intervals.push_back(i);
+	}
+
+	piecewise_constant_distribution<double> rngEn(intervals.begin(), intervals.end(), weights.begin());
+
+	////////SETTING UP THE SIMULATION UNIVERSE////////
 
 	long long graveyardCount = 0;
 	long long scatterCount = 0;
 	long long absorptionCount = 0;
 
-	////////TESTING//////////
-	Isotope O_16("O_16", 16, "O_16.dat");
-	Isotope H_1("H_1", 1, "H_1.dat");
-	Material water("water", 1, 0.00001, &settings);
-	water.addIsotope(&O_16, 1);
-	water.addIsotope(&H_1, 2);
-	water.prepare();
-	water.printComposition();
+	cout << "Preparing isotopes...\n";
 
-	//Initialization of macrobodies
+	////ISOTOPES////
+	Isotope Al_27("Al_27", 27, "Al27-102.dat");
+	Isotope O_16("O_16", 16, "O16-10.dat");
+	Isotope Yb_168("Yb_168", 168, "Yb168-102.dat");
+	Isotope Yb_170("Yb_170", 170, "Yb170-102.dat");
+	Isotope Yb_171("Yb_171", 171, "Yb171-102.dat");
+	Isotope Yb_172("Yb_172", 172, "Yb172-102.dat");
+	Isotope Yb_173("Yb_173", 173, "Yb173-102.dat");
+	Isotope Yb_174("Yb_174", 174, "Yb174-102.dat");
+	Isotope Yb_176("Yb_176", 176, "Yb176-102.dat");
+	Isotope Vacuum("Vacuum", 0, "vacuum.dat");
+
+	cout << "Isotopes prepared.\n";
+	cout << "Preparing materials...\n";
+
+	////MATERIALS////
+	Material Yb3O2("Ytterbium Oxide (Yb3O2)", 7.5, 0.027628, &settings);
+	Yb3O2.addIsotope(&O_16, 2);
+	Yb3O2.addIsotope(&Yb_168, 2.4);
+	Yb3O2.addIsotope(&Yb_170, 0.0183);
+	Yb3O2.addIsotope(&Yb_171, 0.0858);
+	Yb3O2.addIsotope(&Yb_172, 0.1317);
+	Yb3O2.addIsotope(&Yb_173, 0.0969);
+	Yb3O2.addIsotope(&Yb_174, 0.1911);
+	Yb3O2.addIsotope(&Yb_176, 0.0762);
+	Yb3O2.prepare();
+
+	Material alum("Aluminum", 2.702, 9.06e-3, &settings);
+	alum.addIsotope(&Al_27, 1);
+	alum.prepare();
+
+	Material vacuum("Vacuum", 0, 0, &settings);
+	vacuum.addIsotope(&Vacuum, 1);
+	vacuum.prepare();
+
+	cout << "Materials prepared.\n";
+	cout << "Placing macrobodies...\n";
+
+	////MACROBODIES////
 	vector<Macrobody*> macrobodies;
 
-	//Single cylinder centered at the origin
-	Cylinder c1(1.75, 0.6, 0, 0, 0, water, settings);
-	macrobodies.push_back(&c1);
+	//Aluminum LD Canister to hold pellets
+	Cylinder ld("LD Canister", 30, 4.75, 0, 0, 0, alum, 2, settings);
+	macrobodies.push_back(&ld);
 
+	//Vacuum channels to hold pellets
+	Cylinder channel1("Vacuum Channel #1", 22.5, 0.405, 0, 2.31, 0, vacuum, 3, settings);
+	macrobodies.push_back(&channel1);
+
+	Cylinder channel2("Vacuum Channel #2", 22.5, 0.405, 1.63342, 1.63342, 0, vacuum, 3, settings);
+	macrobodies.push_back(&channel2);
+
+	Cylinder channel3("Vacuum Channel #3", 22.5, 0.405, 2.31, 0, 0, vacuum, 3, settings);
+	macrobodies.push_back(&channel3);
+
+	Cylinder channel4("Vacuum Channel #4", 22.5, 0.405, 1.63342, -1.63342, 0, vacuum, 3, settings);
+	macrobodies.push_back(&channel4);
+
+	Cylinder channel5("Vacuum Channel #5", 22.5, 0.405, 0, -2.31, 0, vacuum, 3, settings);
+	macrobodies.push_back(&channel5);
+
+	Cylinder channel6("Vacuum Channel #6", 22.5, 0.405, -1.63342, -1.63342, 0, vacuum, 3, settings);
+	macrobodies.push_back(&channel6);
+
+	Cylinder channel7("Vacuum Channel #7", 22.5, 0.405, -2.31, 0, 0, vacuum, 3, settings);
+	macrobodies.push_back(&channel7);
+
+	Cylinder channel8("Vacuum Channel #8", 22.5, 0.405, -1.63342, 1.63342, 0, vacuum, 3, settings);
+	macrobodies.push_back(&channel8);
+
+	//Yb3O2 Pellets placed inside of vacuum channels
+	Cylinder pellet1("Yb3O2 Pellet #1", 21, 0.3, 0, 2.31, -0.875, Yb3O2, 4, settings);
+	macrobodies.push_back(&pellet1);
+
+	Cylinder pellet2("Yb3O2 Pellet #2", 21, 0.3, 1.63342, 1.63342, -0.875, Yb3O2, 4, settings);
+	macrobodies.push_back(&pellet2);
+
+	Cylinder pellet3("Yb3O2 Pellet #3", 21, 0.3, 2.31, 0, -0.875, Yb3O2, 4, settings);
+	macrobodies.push_back(&pellet3);
+
+	Cylinder pellet4("Yb3O2 Pellet #4", 21, 0.3, 1.63342, -1.63342, -0.875, Yb3O2, 4, settings);
+	macrobodies.push_back(&pellet4);
+
+	Cylinder pellet5("Yb3O2 Pellet #5", 21, 0.3, 0, -2.31, -0.875, Yb3O2, 4, settings);
+	macrobodies.push_back(&pellet5);
+
+	Cylinder pellet6("Yb3O2 Pellet #6", 21, 0.3, -1.63342, -1.63342, -0.875, Yb3O2, 4, settings);
+	macrobodies.push_back(&pellet6);
+
+	Cylinder pellet7("Yb3O2 Pellet #7", 21, 0.3, -2.31, 0, -0.875, Yb3O2, 4, settings);
+	macrobodies.push_back(&pellet7);
+
+	Cylinder pellet8("Yb3O2 Pellet #8", 21, 0.3, -1.63342, 1.63342, -0.875, Yb3O2, 4, settings);
+	macrobodies.push_back(&pellet8);
+
+	cout << "Macrobodies placed.\n";
 	cout << "Simulation is now running...\n";
 
 	//The main loop that runs through all particle sims.
@@ -67,7 +168,8 @@ int main()
 		while(particle.isAlive())
 		{
 			Material::EventType lastEvent = Material::NoEvent;
-			Macrobody* highestPriorityIn = NULL;
+			Macrobody* highestPriorityBody = NULL;
+			int highestPriorityNum = -1;
 
 			//Check if particle is in contact with something
 			for(auto body : macrobodies)
@@ -75,13 +177,18 @@ int main()
 				//If the particle is in contact
 				if(body->isIn(particle))
 				{
-					//Then calculate what happens
-					lastEvent = body->event(particle, rng, rngVel); 
-					//As of now, a particle can only be in one body
-					//[TODO] Add priorities to macrobodies
+					if(body->getPriority() > highestPriorityNum)
+					{
+						highestPriorityBody = body;
+						highestPriorityNum = body->getPriority();
+					}
 					break; 
 				}
 			}
+
+			//Calculate event on highest priority body in current contact
+			if(highestPriorityNum != -1)
+				lastEvent = highestPriorityBody->event(particle, rng, rngVel); 
 
 			//Add to counters for certain events.
 			//Update particle on scatter or no event.
@@ -90,7 +197,8 @@ int main()
 				case Material::Absorb:
 					++absorptionCount;
 					//Print to file here
-					out << particle << "\n";
+					out << highestPriorityBody->getName() << "," << 
+						particle << "\n";
 					break;
 				case Material::Scatter:
 					++scatterCount;

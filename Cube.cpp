@@ -2,15 +2,19 @@
 
 using namespace std;
 
-Cube::Cube( double a_in, 
-			 	   double x_in, double y_in, double z_in,
-			 	   Material material_in,
-			 	   Settings& settings_in)
+Cube::Cube(string name_in,
+		   double a_in, 
+		   double x_in, double y_in, double z_in,
+		   Material material_in,
+		   int priority_in, 
+		   Settings& settings_in)
 :a(a_in), 
 x(x_in), y(y_in), z(z_in),
 settings(settings_in)
 {
+	name = name_in;
 	material = material_in;
+	priority = priority_in;
 }
 
 bool Cube::isIn(Particle& particle)

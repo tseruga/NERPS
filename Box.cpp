@@ -2,15 +2,19 @@
 
 using namespace std;
 
-Box::Box( double x_length_in, 
-			 double y_length_in, double z_length_in,
-			 double x_in, double y_in, double z_in,
-			 Material material_in,
-			 Settings& settings_in)
+Box::Box(string name_in,
+		 double x_length_in, 
+		 double y_length_in, double z_length_in,
+		 double x_in, double y_in, double z_in,
+		 Material material_in,
+		 int priority_in, 
+		 Settings& settings_in)
 :x_l(x_length_in), y_l(y_length_in), z_l(z_length_in), x(x_in), y(y_in), z(z_in),
 settings(settings_in)
 {
+	name = name_in;
 	material = material_in;
+	priority = priority_in;
 }
 
 bool Box::isIn(Particle& particle)

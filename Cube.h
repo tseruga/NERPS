@@ -12,10 +12,12 @@ class Cube: public Macrobody
 {
 public:
 	//Ctor
-	Cube( double a_in, 
-			 double x_in, double y_in, double z_in,
-			 Material material_in,
-			 Settings& settings_in);
+	Cube(std::string name_in, 
+		 double a_in, 
+		 double x_in, double y_in, double z_in,
+		 Material material_in,
+		 int priority_in, 
+		 Settings& settings_in);
 
 	bool isIn(Particle& particle);
 

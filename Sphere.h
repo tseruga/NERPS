@@ -12,9 +12,11 @@ class Sphere: public Macrobody
 {
 public:
 	//Ctor
-	Sphere(double r_in, 
+	Sphere(std::string name_in,
+		   double r_in, 
 		   double x_in, double y_in, double z_in,
 		   Material material_in,
+		   int priority_in, 
 		   Settings& settings_in);
 
 	bool isIn(Particle& particle);

@@ -19,10 +19,10 @@ class Material
 		Material();
 
 		Material(std::string name_in, double density_in, 
-				 double scatterProb_in, Settings* settings_in);
+				 double crossSection, Settings* settings_in);
 
 		//Adds isotope to the composition of the material
-		void addIsotope(Isotope* isotope, int abundance);
+		void addIsotope(Isotope* isotope, double abundance);
 
 		//To be called after all isotopes have been added to the material
 		//Calculates needed information about the material

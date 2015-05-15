@@ -39,6 +39,13 @@ public:
 		return val;
 	}
 
+	virtual int getPriority(){return priority;}
+
+	virtual std::string getName(){return name;}
+
+protected:
+	std::string name;
+	int priority;
 	Material material;
 
 };
