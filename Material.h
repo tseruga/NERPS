@@ -19,7 +19,7 @@ class Material
 		Material();
 
 		Material(std::string name_in, double density_in, 
-				 double crossSection, Settings* settings_in);
+				 Settings* settings_in);
 
 		//Adds isotope to the composition of the material
 		void addIsotope(Isotope* isotope, double abundance);

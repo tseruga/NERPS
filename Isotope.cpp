@@ -4,8 +4,9 @@ using namespace std;
 
 Isotope::Isotope(string name_in, 
 				 int atomicWgt_in, 
-				 string dat_filename)
-:name(name_in), atomicWeight(atomicWgt_in)
+				 string dat_filename, 
+				 double scatterCrossSection_in)
+:name(name_in), atomicWeight(atomicWgt_in), scatterCrossSection(scatterCrossSection_in)
 {
 	//Open .dat file and extract info
 	ifstream dat(("DATs/" + dat_filename).c_str());
@@ -39,4 +40,11 @@ double Isotope::getCrossSection(double searchEnergy)
 		return EnCSVec.back().crossSection;
 
 	return (*closest).crossSection;
+}
+
+//for now this only returns a single value given by the user
+//Eventually, it will be energy dependent like absorbtion
+double Isotope::getScatterCrossSection()
+{
+	return scatterCrossSection;
 }

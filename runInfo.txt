@@ -1,0 +1,63 @@
+Particles ran: 10000
+Lost to graveyard: 9388
+Lost to absorption: 612
+Scatter events: 2518
+
+-------------MATERIALS-------------
+
+------ Material: Aluminum ------
+Al_27
+Abundance: 1
+Relative Abundance: 1
+Weight Fraction: 1
+Atomic Density: 6.02446e+22 atoms/cm^3
+
+------ Material: Ytterbium Oxide (Yb3O2) ------
+O_16
+Abundance: 2
+Relative Abundance: 0.4
+Weight Fraction: 0.0593624
+Atomic Density: 1.67513e+22 atoms/cm^3
+
+Yb_168
+Abundance: 2.4
+Relative Abundance: 0.48
+Weight Fraction: 0.747967
+Atomic Density: 2.01016e+22 atoms/cm^3
+
+Yb_170
+Abundance: 0.0183
+Relative Abundance: 0.00366
+Weight Fraction: 0.00577114
+Atomic Density: 1.53275e+20 atoms/cm^3
+
+Yb_171
+Abundance: 0.0858
+Relative Abundance: 0.01716
+Weight Fraction: 0.0272173
+Atomic Density: 7.18632e+20 atoms/cm^3
+
+Yb_172
+Abundance: 0.1317
+Relative Abundance: 0.02634
+Weight Fraction: 0.0420219
+Atomic Density: 1.10308e+21 atoms/cm^3
+
+Yb_173
+Abundance: 0.0969
+Relative Abundance: 0.01938
+Weight Fraction: 0.0310979
+Atomic Density: 8.11602e+20 atoms/cm^3
+
+Yb_174
+Abundance: 0.1911
+Relative Abundance: 0.03822
+Weight Fraction: 0.0616839
+Atomic Density: 1.60059e+21 atoms/cm^3
+
+Yb_176
+Abundance: 0.0762
+Relative Abundance: 0.01524
+Weight Fraction: 0.0248788
+Atomic Density: 6.38226e+20 atoms/cm^3
+

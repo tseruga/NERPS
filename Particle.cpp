@@ -12,7 +12,7 @@ Particle::Particle(std::default_random_engine& rng,
 	//Set the initial position
 	double theta = rngTheta(rng);
 	double phi = rngPhi(rng);
-	double rho = 100;
+	double rho = 10;
 
 	//Convert to cartersian coords
 	x = (rho*sin(theta)*cos(phi));

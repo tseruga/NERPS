@@ -63,22 +63,22 @@ int main()
 	cout << "Preparing isotopes...\n";
 
 	////ISOTOPES////
-	Isotope Al_27("Al_27", 27, "Al27-102.dat");
-	Isotope O_16("O_16", 16, "O16-10.dat");
-	Isotope Yb_168("Yb_168", 168, "Yb168-102.dat");
-	Isotope Yb_170("Yb_170", 170, "Yb170-102.dat");
-	Isotope Yb_171("Yb_171", 171, "Yb171-102.dat");
-	Isotope Yb_172("Yb_172", 172, "Yb172-102.dat");
-	Isotope Yb_173("Yb_173", 173, "Yb173-102.dat");
-	Isotope Yb_174("Yb_174", 174, "Yb174-102.dat");
-	Isotope Yb_176("Yb_176", 176, "Yb176-102.dat");
-	Isotope Vacuum("Vacuum", 0, "vacuum.dat");
+	Isotope Al_27("Al_27", 27, "Al27-102.dat", 1.503);
+	Isotope O_16("O_16", 16, "O16-10.dat", 4.232);
+	Isotope Yb_168("Yb_168", 168, "Yb168-102.dat", 2.13);
+	Isotope Yb_170("Yb_170", 170, "Yb170-102.dat", 5.8);
+	Isotope Yb_171("Yb_171", 171, "Yb171-102.dat", 15.6);
+	Isotope Yb_172("Yb_172", 172, "Yb172-102.dat", 11.2);
+	Isotope Yb_173("Yb_173", 173, "Yb173-102.dat", 15);
+	Isotope Yb_174("Yb_174", 174, "Yb174-102.dat", 46.8);
+	Isotope Yb_176("Yb_176", 176, "Yb176-102.dat", 9.6);
+	Isotope Vacuum("Vacuum", 0, "vacuum.dat", 0);
 
 	cout << "Isotopes prepared.\n";
 	cout << "Preparing materials...\n";
 
 	////MATERIALS////
-	Material Yb3O2("Ytterbium Oxide (Yb3O2)", 7.5, 0.027628, &settings);
+	Material Yb3O2("Ytterbium Oxide (Yb3O2)", 7.5, &settings);
 	Yb3O2.addIsotope(&O_16, 2);
 	Yb3O2.addIsotope(&Yb_168, 2.4);
 	Yb3O2.addIsotope(&Yb_170, 0.0183);
@@ -89,11 +89,11 @@ int main()
 	Yb3O2.addIsotope(&Yb_176, 0.0762);
 	Yb3O2.prepare();
 
-	Material alum("Aluminum", 2.702, 9.06e-3, &settings);
+	Material alum("Aluminum", 2.702, &settings);
 	alum.addIsotope(&Al_27, 1);
 	alum.prepare();
 
-	Material vacuum("Vacuum", 0, 0, &settings);
+	Material vacuum("Vacuum", 0, &settings);
 	vacuum.addIsotope(&Vacuum, 1);
 	vacuum.prepare();
 

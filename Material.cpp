@@ -6,11 +6,9 @@ Material::Material()
 {}
 
 Material::Material(string name_in, double density_in, 
-				   double crossSection, Settings* settings_in)
+				   Settings* settings_in)
 :name(name_in), density(density_in), settings(settings_in)
 {
-	scatterProb = 1 - pow(2.71828182845904523536, 
-								 -crossSection*settings->step);
 }
 
 void Material::addIsotope(Isotope* isotope, double abundance)
@@ -71,6 +69,13 @@ Material::EventType Material::event(Particle& particle,
 	{
 		//Check scatter first
 		roll = abs(prob(rng));
+		
+		double scatterMacroCrossSection = iso.atomicDensity * 
+								   iso.isotope->getScatterCrossSection() *
+								   10e-25;
+
+		double scatterProb = 1 - pow(2.71828182845904523536, 
+								 -scatterMacroCrossSection*settings->step);
 		//Scatter occurred
 		if(roll < scatterProb)
 			return Material::Scatter;
