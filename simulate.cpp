@@ -11,6 +11,7 @@
 #include "Settings.h"
 #include "Particle.h"
 #include "Cylinder.h"
+#include "Cone.h"
 #include "Macrobody.h"
 #include "Isotope.h"
 #include "Material.h"
@@ -105,58 +106,8 @@ int main()
 	vector<Macrobody*> macrobodies;
 
 	//Aluminum LD Canister to hold pellets
-	Cylinder ld("LD_Canister", 30, 4.75, 0, 0, 0, alum, 2, settings);
-	macrobodies.push_back(&ld);
-
-	//Vacuum channels to hold pellets
-	Cylinder channel1("Vacuum_Channel_#1", 22.5, 0.405, 0, 2.31, 0, vacuum, 3, settings);
-	macrobodies.push_back(&channel1);
-
-	Cylinder channel2("Vacuum_Channel_#2", 22.5, 0.405, 1.63342, 1.63342, 0, vacuum, 3, settings);
-	macrobodies.push_back(&channel2);
-
-	Cylinder channel3("Vacuum_Channel_#3", 22.5, 0.405, 2.31, 0, 0, vacuum, 3, settings);
-	macrobodies.push_back(&channel3);
-
-	Cylinder channel4("Vacuum_Channel_#4", 22.5, 0.405, 1.63342, -1.63342, 0, vacuum, 3, settings);
-	macrobodies.push_back(&channel4);
-
-	Cylinder channel5("Vacuum_Channel_#5", 22.5, 0.405, 0, -2.31, 0, vacuum, 3, settings);
-	macrobodies.push_back(&channel5);
-
-	Cylinder channel6("Vacuum_Channel_#6", 22.5, 0.405, -1.63342, -1.63342, 0, vacuum, 3, settings);
-	macrobodies.push_back(&channel6);
-
-	Cylinder channel7("Vacuum_Channel_#7", 22.5, 0.405, -2.31, 0, 0, vacuum, 3, settings);
-	macrobodies.push_back(&channel7);
-
-	Cylinder channel8("Vacuum_Channel_#8", 22.5, 0.405, -1.63342, 1.63342, 0, vacuum, 3, settings);
-	macrobodies.push_back(&channel8);
-
-	//Yb3O2 Pellets placed inside of vacuum channels
-	Cylinder pellet1("Yb3O2_Pellet_#1", 21, 0.3, 0, 2.31, -0.875, Yb3O2, 4, settings);
-	macrobodies.push_back(&pellet1);
-
-	Cylinder pellet2("Yb3O2_Pellet_#2", 21, 0.3, 1.63342, 1.63342, -0.875, Yb3O2, 4, settings);
-	macrobodies.push_back(&pellet2);
-
-	Cylinder pellet3("Yb3O2_Pellet_#3", 21, 0.3, 2.31, 0, -0.875, Yb3O2, 4, settings);
-	macrobodies.push_back(&pellet3);
-
-	Cylinder pellet4("Yb3O2_Pellet_#4", 21, 0.3, 1.63342, -1.63342, -0.875, Yb3O2, 4, settings);
-	macrobodies.push_back(&pellet4);
-
-	Cylinder pellet5("Yb3O2_Pellet_#5", 21, 0.3, 0, -2.31, -0.875, Yb3O2, 4, settings);
-	macrobodies.push_back(&pellet5);
-
-	Cylinder pellet6("Yb3O2_Pellet_#6", 21, 0.3, -1.63342, -1.63342, -0.875, Yb3O2, 4, settings);
-	macrobodies.push_back(&pellet6);
-
-	Cylinder pellet7("Yb3O2_Pellet_#7", 21, 0.3, -2.31, 0, -0.875, Yb3O2, 4, settings);
-	macrobodies.push_back(&pellet7);
-
-	Cylinder pellet8("Yb3O2_Pellet_#8", 21, 0.3, -1.63342, 1.63342, -0.875, Yb3O2, 4, settings);
-	macrobodies.push_back(&pellet8);
+	Cone test("test_cone",-1,-3,5,1,3,4,3,Yb3O2,1,settings);
+	macrobodies.push_back(&test);
 
 	cout << "Macrobodies placed.\n";
 	cout << "Simulation is now running...\n";

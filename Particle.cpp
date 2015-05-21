@@ -9,10 +9,13 @@ Particle::Particle(std::default_random_engine& rng,
 			       std::piecewise_constant_distribution<double>& rngEn,
 			       Settings* settings_in)
 {
+	//Save settings
+	settings = settings_in;
+
 	//Set the initial position
 	double theta = rngTheta(rng);
 	double phi = rngPhi(rng);
-	double rho = 10;
+	double rho = 15;
 
 	//Convert to cartersian coords
 	x = (rho*sin(theta)*cos(phi));
@@ -44,8 +47,6 @@ Particle::Particle(std::default_random_engine& rng,
 	absorbed = false;
 	scatterCount = 0;
 
-	//Save settings
-	settings = settings_in;
 }
 
 void Particle::update()
