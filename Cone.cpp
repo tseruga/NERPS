@@ -1,6 +1,8 @@
 #include "Cone.h"
+#include "VectorUtilities.h"
 
 using namespace std;
+using namespace vectorUtilities;
 
 Cone::Cone(std::string name_in,
 			 double apex_x_in, double apex_y_in, double apex_z_in, 
@@ -59,34 +61,4 @@ bool Cone::isIn(Particle& particle)
 
 	return isUnderBase;
 
-}
-
-double Cone::dot(vector<double> a, vector<double> b)
-{
-	double dotProduct = 0;
-
-	dotProduct = a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
-
-	return dotProduct;
-}
-
-double Cone::mag(vector<double> a)
-{
-	double magnitude = 0;
-
-	magnitude = a[0]*a[0]+a[1]*a[1]+a[2]*a[2];
-	
-
-	return sqrt( magnitude );
-}
-
-vector<double> Cone::dif(vector<double> a, vector<double> b)
-{
-	vector<double> c;
-
-	c.push_back(a[0] - b[0]);
-	c.push_back(a[1] - b[1]);
-	c.push_back(a[2] - b[2]);
-
-	return c;
 }

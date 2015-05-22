@@ -1,5 +1,5 @@
-#ifndef SPHERE_H
-#define SPHERE_H
+#ifndef HOLLOWSPHERE_H
+#define HOLLOWSPHERE_H
 
 #include <random>
 #include <cmath>
@@ -9,12 +9,12 @@
 #include "Material.h"
 #include "Macrobody.h"
 
-class Sphere: public Macrobody
+class HollowSphere: public Macrobody
 {
 public:
 	//Ctor
-	Sphere(std::string name_in,
-		   double r_in, 
+	HollowSphere(std::string name_in,
+		   double r_outer_in, double r_inner_in, 
 		   double x_in, double y_in, double z_in,
 		   Material material_in,
 		   int priority_in, 
@@ -24,8 +24,9 @@ public:
 
 private:
 	////Private member variables////
-	//Dimensions of cylinder
-	double r;
+	//Dimensions of Sphere
+	double rOuter;
+	double rInner;
 
 	//Position in space
 	double x;

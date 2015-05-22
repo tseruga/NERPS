@@ -47,17 +47,6 @@ private:
 	//Settings
 	Settings settings;
 
-	//helper functions
-
-	//strait forward dot product of a and b
-	double dot(std::vector<double> a, std::vector<double> b);
-
-	//magnitude of a
-	double mag(std::vector<double> a);
-
-	//differance between a and b
-	std::vector<double> dif(std::vector<double> a, std::vector<double> b);
-
 };
 
 #endif
