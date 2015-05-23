@@ -29,7 +29,10 @@ Cone::Cone(std::string name_in,
 	apexToBase = dif(base, apex);
 
 	//Defining angles 
-	halfAlpha = tan(r/(mag(dif(base,apex))));
+
+	//I don't know physics, excuse the awful variable names
+	vector<double> baseApexDif = dif(base,apex);
+	halfAlpha = tan(r/(mag(baseApexDif)));
 }
 
 bool Cone::isIn(Particle& particle)

@@ -7,6 +7,9 @@
 #include <random>
 #include <math.h>
 #include <iomanip>
+#include <ctime>
+#include <chrono>
+#include <getopt.h>
 
 #include "Settings.h"
 #include "Particle.h"
@@ -18,13 +21,35 @@
 
 using namespace std;
 
-static inline void loadingBar(long long soFar, 
-							  long long total);
+void getOpt(int argc, char**argv, Settings& settings);
 
-int main()
+static inline void loadingBar(long long soFar, 
+							  long long total,
+							  bool timeMode);
+
+template<typename TimeT = std::chrono::milliseconds>
+struct measure
+{
+    template<typename F, typename ...Args>
+    static typename TimeT::rep execution(F func, Args&&... args)
+    {
+        auto start = std::chrono::system_clock::now();
+        func(std::forward<Args>(args)...);
+        auto duration = std::chrono::duration_cast< TimeT> 
+                            (std::chrono::system_clock::now() - start);
+        return duration.count();
+    }
+};
+
+int main(int argc, char**argv)
 {
 	/////////////////Init Settings////////////////////
 	Settings settings;
+	getOpt(argc, argv, settings);
+	
+  	clock_t begin = clock();
+
+  	long long particleCount = 0;
 
 	//Initilization of output file
 	ofstream out(settings.filename.c_str());
@@ -106,17 +131,40 @@ int main()
 	vector<Macrobody*> macrobodies;
 
 	//Aluminum LD Canister to hold pellets
-	Cone test("test_cone",-1,-3,5,1,3,4,3,Yb3O2,1,settings);
-	macrobodies.push_back(&test);
+	//Cylinder c1("Test Cylinder", 5, 10, 0, 0, 0, alum, 1, settings);
+	Cone c1("Test Cone", 5, 5, 5, 0, 0, 0, 3, alum, 1, settings);
+	macrobodies.push_back(&c1);
 
 	cout << "Macrobodies placed.\n";
 	cout << "Simulation is now running...\n";
 
+
 	//The main loop that runs through all particle sims.
 	for(auto i = 0; i < settings.numParticles; ++i)
 	{
-		//Print loading bar for the user
-		loadingBar(i, settings.numParticles);
+		if(settings.timeMode)
+		{
+			//Update time only ocassionally
+			if(i%5000 == 0)
+			{
+				i=0;
+				clock_t now = clock();
+				double timeElapsed = double(now-begin)/CLOCKS_PER_SEC;
+				if(timeElapsed/60. > settings.runningTime)
+				{
+					break;
+				}
+				//cout << (long long)((timeElapsed/60.)*10e3) << "/" << (long long)(settings.runningTime*10e3) << endl;
+				loadingBar((int)((timeElapsed/60.)*10e3), (int)(settings.runningTime*10e3), settings.timeMode);
+			}
+		}
+		else
+		{
+			//Print loading bar for the user
+			loadingBar(i, settings.numParticles, settings.timeMode);
+		}
+		
+		++particleCount;
 
 		//Spawn a particle
 		Particle particle(rng, rngTheta, rngPhi, rngVel, rngEn, &settings);
@@ -170,12 +218,20 @@ int main()
 		}
 	}
 
+	//Show the user a full loading bar
+	loadingBar(99, 100, settings.timeMode);
+
+	//Get time elapsed
+	clock_t end = clock();
+	double timeElapsed = double(end-begin)/CLOCKS_PER_SEC;
+
 	cout << "\r" << flush;
 	cout << "\n\nProcess was completed successfully\n";
 	cout << "Absorption locations were written to file: " << settings.filename << "\n";
 	cout << "Run info was written to file: runInfo.txt\n";
 
-	runInfo << "Particles ran: " << settings.numParticles << endl;
+	runInfo << "Total time elapsed: " << timeElapsed/60. <<  " minutes" << endl;
+	runInfo << "Particles ran: " << particleCount << endl;
 	runInfo << "Lost to graveyard: " << graveyardCount << endl;
 	runInfo << "Lost to absorption: " << absorptionCount << endl;
 	runInfo << "Scatter events: " << scatterCount << endl;
@@ -187,10 +243,14 @@ int main()
 }
 
 static inline void loadingBar(long long soFar, 
-						 	  long long total)
+						 	  long long total,
+						 	  bool timeMode)
 {
-	//We're going to update on whole percentages
-	if(soFar % (total/100 + 1) != 0) return;
+	if(!timeMode)
+	{
+		//We're going to update on whole percentages
+		if(soFar % (total/100 + 1) != 0) return;	
+	}
 
 	double ratio = soFar/(double)total;
 
@@ -200,5 +260,46 @@ static inline void loadingBar(long long soFar,
 	for(int x = 0; x < c; x++) cout << "=";
 	for(int x = c; x < 50; x++) cout << " ";
 	cout << "]\r" << flush;
+
+}
+
+void getOpt(int argc, char**argv, Settings& settings)
+{
+	struct option longOpts[] = {
+    { "time", required_argument, NULL, 't' },
+    { "help", no_argument, NULL, 'h'},
+
+    // We need this line so that getopt knows when to stop searching.
+    // If we don't provide it, it will read beyond this array and crash
+    // when we give it an unrecognized long option.
+    { 0, 0, 0, 0 }
+    };
+
+    opterr = false;
+
+    int opt = 0, index = 0;
+
+    //Program defaults to particleCountMode
+    settings.timeMode = false;
+
+    while ((opt = getopt_long(argc, argv, "t:h", longOpts, &index)) != -1) {
+        switch (opt) {
+        case 't':
+        	settings.timeMode = true;
+        	settings.runningTime = atof(optarg);
+            break;
+        case 'h':
+        	cout << "FLAGS:" << endl;
+        	cout << "--time <arg> or -t <arg> : Runs the simulation for a set time given in minutes <arg>" << endl;
+        	cout << "\t./sim -t 60 would run the program for one hour." << endl;
+        	cout << endl;
+        	cout << "Be sure to compile with \"make release\" to enable compiler optimization flags" << endl;
+            exit(0);
+            break;
+        default:
+            cout << "I didn't recognize one of your flags!\n";
+            exit(1);
+        }
+    }
 
 }

@@ -1,7 +1,8 @@
-Particles ran: 10000
-Lost to graveyard: 9388
-Lost to absorption: 612
-Scatter events: 2518
+Total time elapsed: 0.108 minutes
+Particles ran: 30000
+Lost to graveyard: 29998
+Lost to absorption: 2
+Scatter events: 91
 
 -------------MATERIALS-------------
 

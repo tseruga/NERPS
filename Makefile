@@ -56,7 +56,7 @@ TESTSOURCES = $(wildcard test*.cpp)
 TESTS       = $(TESTSOURCES:%.cpp=%)
 
 # list of sources used in project
-SOURCES 	= $(wildcard *.cpp)
+SOURCES 	= $(wildcard *.cpp) $(wildcard */*.cpp)
 SOURCES     := $(filter-out $(TESTSOURCES), $(SOURCES))
 # list of objects used in project
 OBJECTS		= $(SOURCES:%.cpp=%.o)

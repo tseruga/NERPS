@@ -5,7 +5,7 @@
 
 namespace vectorUtilities
 {
-    static double dot(std::vector<double> a, std::vector<double> b)
+    static double dot(std::vector<double>& a, std::vector<double>& b)
 	{
 		double dotProduct = 0;
 
@@ -14,7 +14,7 @@ namespace vectorUtilities
 		return dotProduct;
 	}	
 
-	static double mag(std::vector<double> a)
+	static double mag(std::vector<double>& a)
 	{
 		double magnitude = 0;
 
@@ -24,7 +24,7 @@ namespace vectorUtilities
 		return sqrt( magnitude );
 	}
 	
-	static std::vector<double> dif(std::vector<double> a, std::vector<double> b)
+	static std::vector<double> dif(std::vector<double>& a, std::vector<double>& b)
 	{
 		std::vector<double> c;
 

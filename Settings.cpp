@@ -45,8 +45,5 @@ void Settings::read()
 	getline(file, garbage); // \n char
 	file >> garbage; file >> garbage; //SPHERE_RADIUS =
 	file >> sphereR;
-
-	cout << "SPHERE RADIUS: " << sphereR << endl << endl;
-
 	return;
 }

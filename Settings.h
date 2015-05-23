@@ -11,6 +11,12 @@ class Settings
 public:
 	Settings();
 
+	//Set to true if the program is in run by time mode
+	bool timeMode;
+
+	//The time to run if timeMode is true;
+	double runningTime;
+
 	//Delta T for particle updating
 	double step;
 
