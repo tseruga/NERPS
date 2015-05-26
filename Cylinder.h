@@ -14,8 +14,9 @@ class Cylinder: public Macrobody
 public:
 	//Ctor
 	Cylinder(std::string name_in,
-			 double h_in, double r_in, 
-			 double x_in, double y_in, double z_in,
+			 double apex_x_in, double apex_y_in, double apex_z_in, 
+			 double base_x_in, double base_y_in, double base_z_in,
+			 double r_in,
 			 Material material_in,
 			 int priority_in, 
 			 Settings& settings_in);
@@ -24,14 +25,20 @@ public:
 
 private:
 	////Private member variables////
-	//Dimensions of cylinder
-	double h;
+	//location of the apex
+	std::vector<double> apex;
+
+	//Position of base
+	std::vector<double> base;
+
+	//radius of cylinder
 	double r;
 
-	//Position in space
-	double x;
-	double y;
-	double z;
+	//height of cylinder 
+	double height;
+
+	//Components of the vector from the apex to the base
+	std::vector<double> baseToApex;
 
 	//Material properties
 	double absCS; //Abs step distance prob
