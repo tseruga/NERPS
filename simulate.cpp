@@ -15,6 +15,7 @@
 #include "Particle.h"
 #include "Cylinder.h"
 #include "Cone.h"
+#include "Torus.h"
 #include "Macrobody.h"
 #include "Isotope.h"
 #include "Material.h"
@@ -132,7 +133,7 @@ int main(int argc, char**argv)
 
 	//Aluminum LD Canister to hold pellets
 	//Cylinder c1("Test Cylinder", 5, 10, 0, 0, 0, alum, 1, settings);
-	Cylinder c1("Test Cone", 5, 0, 0, 0, 0, 0, 3, Yb3O2, 1, settings);
+	Torus c1("Test Torus", 0, 0, 0, 1, 1, 1, 3, 4, Yb3O2, 1, settings);
 	macrobodies.push_back(&c1);
 
 	cout << "Macrobodies placed.\n";
