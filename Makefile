@@ -1,213 +1,70 @@
-## EECS 281 Advanced Makefile
+#Taken from a wonderful answer at StackOverflow:
+#http://stackoverflow.com/questions/5178125/gnu-make-how-to-get-object-files-in-separate-subdirectory
+#Credit goes to: Nicholas Hamilton
+#Slightly altered
 
-# How to use this Makefile...
-###################
-###################
-##               ##
-##  $ make help  ##
-##               ##
-###################
-###################
+#Compiler and Linker
+CC := g++
 
-# IMPORTANT NOTES:
-#   1. Set EXECUTABLE to the command name given in the project specification.
-#   2. To enable automatic creation of unit test rules, your program logic
-#      (where main() is) should be in a file named project*.cpp or specified
-#      in the PROJECTFILE variable.
-#   3. Files you want to include in your final submission cannot match the
-#      test*.cpp pattern.
+#The Target Binary Program
+TARGET := sim
 
-# Version 3.0.1 - 2015-01-22, Waleed Khan (wkhan@umich.edu)
-#   * Added '$(EXECUTABLE): $(OBJECTS)' target. Now you can compile with
-#     'make executable', and re-linking isn't done unnecessarily.
-# Version 3 - 2015-01-16, Marcus M. Darden (mmdarden@umich.edu)
-#   * Add help rule and message
-#   * All customization locations have TODO directly above them.
-# Version 2 - 2014-11-02, Marcus M. Darden (mmdarden@umich.edu)
-#   * Move customization section to the bottom of the file
-#   * Add support for submit without test cases, to prevent submission
-#     deduction while testing, when code fails to compile
-#       usage: make partialsubmit  <- includes no test case files
-#              make fullsubmit     <- includes all test case files
-#   * Add automatic creation of test targets for test driver files
-#       usage: (add cpp files to the project folder with a test prefix)
-#              make alltests       <- builds all test*.cpp
-#              make test_insert    <- builds testinsert from test_insert.cpp
-#              make test2          <- builds testinsert from test2.cpp
-#   * Add documentation and changelog
-# Version 1 - 2014-09-21, David Snider (sniderdj@umich.edu)
-# Vertion 0 - ????-??-??, Matt Diffenderfer (mjdiffy@umich.edu)
+#The Directories, Source, Includes, Objects, Binary and Resources
+SRCDIR := src
+INCDIR := headers
+BUILDDIR := obj
+TARGETDIR := .
+SRCEXT := cpp
+DEPEXT := d
+OBJEXT := o
 
-# enables c++11 on CAEN
-PATH := /usr/um/gcc-4.8.2/bin:$(PATH)
-LD_LIBRARY_PATH := /usr/um/gcc-4.8.2/lib64
-LD_RUN_PATH := /usr/um/gcc-4.8.2/lib64
+#Flags, Libraries and Includes
+CFLAGS := -std=c++11 -O3
+INC := -I$(INCDIR) -I/usr/local/include
+INCDEP := -I$(INCDIR)
 
-# TODO
-# Change 'executable' to match the command name given in the project spec.
-EXECUTABLE 	= sim
+#---------------------------------------------------------------------------------
+#DO NOT EDIT BELOW THIS LINE
+#---------------------------------------------------------------------------------
+SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
 
-# designate which compiler to use
-CXX			= g++
+#Default Make
+all: resources $(TARGET)
 
-# list of test drivers (with main()) for development
-TESTSOURCES = $(wildcard test*.cpp)
-# names of test executables
-TESTS       = $(TESTSOURCES:%.cpp=%)
+#Remake
+remake: cleaner all
 
-# list of sources used in project
-SOURCES 	= $(wildcard *.cpp) $(wildcard */*.cpp)
-SOURCES     := $(filter-out $(TESTSOURCES), $(SOURCES))
-# list of objects used in project
-OBJECTS		= $(SOURCES:%.cpp=%.o)
+#Make the Directories
+directories:
+	@mkdir -p $(TARGETDIR)
+	@mkdir -p $(BUILDDIR)
 
-# TODO
-# If main() is in a file named project*.cpp, use the following line
-#PROJECTFILE = $(wildcard project*.cpp)
-# TODO
-# If main() is in another file delete the line above, edit and uncomment below
-PROJECTFILE = simulate.cpp
-
-# name of the tar ball created for submission
-PARTIAL_SUBMITFILE = partialsubmit.tar.gz
-FULL_SUBMITFILE = fullsubmit.tar.gz
-
-#Default Flags
-CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
-
-# make release - will compile "all" with $(CXXFLAGS) and the -O3 flag
-#				 also defines NDEBUG so that asserts will not check
-release: CXXFLAGS += -O3 -DNDEBUG
-release: all
-
-# make debug - will compile "all" with $(CXXFLAGS) and the -g flag
-#              also defines DEBUG so that "#ifdef DEBUG /*...*/ #endif" works
-debug: CXXFLAGS += -g3 -DDEBUG
-debug: clean all
-
-# make profile - will compile "all" with $(CXXFLAGS) and the -pg flag
-profile: CXXFLAGS += -pg
-profile: clean all
-
-# highest target; sews together all objects into executable
-all: $(EXECUTABLE)
-
-$(EXECUTABLE): $(OBJECTS)
-ifeq ($(EXECUTABLE), executable)
-	@echo Edit EXECUTABLE variable, at first \"TODO\" in Makefile.
-	@echo Using default a.out.
-	$(CXX) $(CXXFLAGS) $(OBJECTS)
-else
-	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(EXECUTABLE)
-endif
-
-# Automatically generate any build rules for test*.cpp files
-define make_tests
-SRCS = $$(filter-out $$(PROJECTFILE), $$(SOURCES))
-OBJS = $$(SRCS:%.cpp=%.o)
-$(1): CXXFLAGS += -pg -DDEBUG
-$(1): $$(OBJS) $$(SRCS)
-ifeq ($$(PROJECTFILE),)
-	@echo Edit PROJECTFILE variable at second \"TODO\" to cpp file with main\(\)
-	@exit 1
-endif
-	$$(CXX) $$(CXXFLAGS) $$(OBJS) $(1).cpp -o $(1)
-endef
-$(foreach test, $(TESTS), $(eval $(call make_tests, $(test))))
-
-alltests: clean $(TESTS)
-
-# rule for creating objects
-%.o:
-	$(CXX) $(CXXFLAGS) -c $*.cpp
-
-# make clean - remove .o files, executables, tarball
+#Clean only Objecst
 clean:
-	rm -f $(OBJECTS) $(EXECUTABLE) $(TESTS) $(PARTIAL_SUBMITFILE) $(FULL_SUBMITFILE)
+	@$(RM) -rf $(BUILDDIR)
+	@rm -rf ./$(TARGET)
 
-# make partialsubmit.tar.gz - cleans, runs dos2unix, creates tarball omitting test cases
-PARTIAL_SUBMITFILES=$(filter-out $(TESTSOURCES), $(wildcard Makefile *.h *.cpp))
-$(PARTIAL_SUBMITFILE): $(PARTIAL_SUBMITFILES)
-	rm -f $(PARTIAL_SUBMITFILE) $(FULL_SUBMITFILE)
-	dos2unix $(PARTIAL_SUBMITFILES)
-	tar -vczf $(PARTIAL_SUBMITFILE) $(PARTIAL_SUBMITFILES)
-	@echo !!! WARNING: No test cases included. Use 'make fullsubmit' to include test cases. !!!
+#Full Clean, Objects and Binaries
+cleaner: clean
+	@$(RM) -rf $(TARGETDIR)
 
-# make fullsubmit.tar.gz - cleans, runs dos2unix, creates tarball including test cases
-FULL_SUBMITFILES=$(filter-out $(TESTSOURCES), $(wildcard Makefile *.h *.cpp test*.txt))
-$(FULL_SUBMITFILE): $(FULL_SUBMITFILES)
-	rm -f $(PARTIAL_SUBMITFILE) $(FULL_SUBMITFILE)
-	dos2unix $(FULL_SUBMITFILES)
-	tar -vczf $(FULL_SUBMITFILE) $(FULL_SUBMITFILES)
-	@echo !!! Final submission prepared, test cases included... READY FOR GRADING !!!
+#Pull in dependency info for *existing* .o files
+-include $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
 
-# shortcut for make submit tarballs
-partialsubmit: $(PARTIAL_SUBMITFILE)
-fullsubmit: $(FULL_SUBMITFILE)
+#Link
+$(TARGET): $(OBJECTS)
+	$(CC) $(LIB) -o $(TARGETDIR)/$(TARGET) $^
 
-define MAKEFILE_HELP
-EECS281 Advanced Makefile Help
-* This Makefile uses advanced techniques, for more information:
-    $$ man make
+#Compile
+$(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
+	@$(CC) $(CFLAGS) $(INCDEP) -MM $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
+	@cp -f $(BUILDDIR)/$*.$(DEPEXT) $(BUILDDIR)/$*.$(DEPEXT).tmp
+	@sed -e 's|.*:|$(BUILDDIR)/$*.$(OBJEXT):|' < $(BUILDDIR)/$*.$(DEPEXT).tmp > $(BUILDDIR)/$*.$(DEPEXT)
+	@sed -e 's/.*://' -e 's/\\$$//' < $(BUILDDIR)/$*.$(DEPEXT).tmp | fmt -1 | sed -e 's/^ *//' -e 's/$$/:/' >> $(BUILDDIR)/$*.$(DEPEXT)
+	@rm -f $(BUILDDIR)/$*.$(DEPEXT).tmp
 
-* General usage
-    1. Follow directions at each "TODO" in this file.
-       a. Set EXECUTABLE equal to the name given in the project specification.
-       b. Set PROJECTFILE equal to the name of the source file with main()
-       c. Add any dependency rules specific to your files.
-    2. Build, test, submit... repeat as necessary.
-
-* Preparing submissions
-    A) To build 'partialsubmit.tar.gz', a tarball without tests used to find
-       buggy solutions in the autograder.  This is useful for faster autograder
-       runs during development and free submissions if the project does not
-       build.
-           $$ make partialsubmit
-    B) Build 'fullsubmit.tar.gz' a tarball complete with autograder test cases.
-       ALWAYS USE THIS FOR FINAL GRADING!  It is also useful when trying to
-       find buggy solutions in the autograder.
-           $$ make fullsubmit
-
-* Unit testing support
-    A) Source files for unit testing should be named test*.cpp.  Examples
-       include test_input.cpp or test3.cpp.
-    B) Automatic build rules are generated to support the following:
-           $$ make test_input
-           $$ make test3
-           $$ make alltests        (this builds all test drivers)
-    C) If test drivers need special dependencies, they must be added manually.
-    D) IMPORTANT: NO SOURCE FILES THAT BEGIN WITH test WILL BE ADDED TO ANY
-       SUBMISSION TARBALLS.
-endef
-export MAKEFILE_HELP
-
-help:
-	@echo "$$MAKEFILE_HELP"
-
-#######################
-# TODO (begin) #
-#######################
-# individual dependencies for objects
-# Examples:
-# "Add a header file dependency"
-# project2.o: project2.cpp project2.h
-#
-# "Add multiple headers and a separate class"
-# HEADERS = some.h special.h header.h files.h
-# myclass.o: myclass.cpp myclass.h $(HEADERS)
-# project5.o: project5.cpp myclass.o $(HEADERS)
-#
-# ADD YOUR OWN DEPENDENCIES HERE
-sim.o: simulate.cpp Particle.o Cylinder.o Settings.h
-Particle.o: Particle.h Particle.cpp
-Cylinder.o: Cylinder.h Cylinder.cpp
-Macrobody.o: Macrobody.h Particle.o Settings.h
-######################
-# TODO (end) #
-######################
-
-
-# these targets do not create any files
-.PHONY: all release debug profile clean alltests debugsubmit finalsubmit help
-# disable built-in rules
-.SUFFIXES:
+#Non-File Targets
+.PHONY: all remake clean cleaner resources
