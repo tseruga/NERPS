@@ -13,11 +13,7 @@ class Particle
 {
 public:
 	//Ctor
-	Particle(std::default_random_engine& rng,
-			 std::uniform_real_distribution<double>& rngTheta,
-			 std::uniform_real_distribution<double>& rngPhi,
-			 std::uniform_real_distribution<double>& rngVel,
-			 std::piecewise_constant_distribution<double>& rngEn,
+	Particle(double x_in, double y_in, double z_in, std::vector<double> velocity_in, double energy_in,
 			 Settings* settings_in);
 
 	////Public member functions////
@@ -26,16 +22,13 @@ public:
 	//Also kills the particle if it goes out of sphere
 	void update();
 
-	//Calculates a new random velocity vector for the particle
-	void scatter(std::default_random_engine& rng,
-			     std::uniform_real_distribution<double>& rngVel);
-
 	//Kills this particle
 	void kill(){alive = false;}
 
 	bool isAlive(){return alive;}
 
 	long long getScatterCount(){return scatterCount;}
+	long long gettickCount(){return tickCount;}
 
 	double getEnergy(){return energy;}
 
@@ -43,6 +36,10 @@ public:
 	double getX() {return x;}
 	double getY() {return y;}
 	double getZ() {return z;}
+
+	//Setters
+	void setVelocity( std::vector<double> a ); //also adds one to scatter count
+	void setEnergy(double a) {energy = a;}
 
 	friend std::ostream& operator<<(std::ostream& os, const Particle& particle);
 
@@ -57,6 +54,7 @@ private:
 	bool alive;
 	bool absorbed;
 	long long scatterCount;
+	long long tickCount;
 };
 
 #endif

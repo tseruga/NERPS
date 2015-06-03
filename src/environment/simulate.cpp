@@ -166,8 +166,39 @@ int main(int argc, char**argv)
 		
 		++particleCount;
 
+		//Creates cooridantes of paritcle 
+
+		//Set the initial position
+		double theta = rngTheta(rng);
+		double phi = rngPhi(rng);
+		double rho = 15;
+
+		//Convert to cartersian coords
+		double x = (rho*sin(theta)*cos(phi));
+		double y = (rho*sin(theta)*sin(phi));
+		double z = (rho*cos(theta));
+
+		//Set the initial velocity
+		double xV = rngVel(rng);
+		double yV = rngVel(rng);
+		double zV = rngVel(rng);
+
+		//Normalize to unit vector
+		double norm = sqrt(xV*xV + yV*yV + zV*zV);
+		xV = xV / norm;
+		yV = yV / norm;
+		zV = zV / norm;
+
+		vector<double> vel(3);
+		vel[0] = xV;
+		vel[1] = yV;
+		vel[2] = zV;
+
+		//Energy
+		double energy = rngEn(rng);
+
 		//Spawn a particle
-		Particle particle(rng, rngTheta, rngPhi, rngVel, rngEn, &settings);
+		Particle particle( x, y, z, vel, energy, &settings);
 
 		while(particle.isAlive())
 		{
@@ -204,8 +235,28 @@ int main(int argc, char**argv)
 						particle << "\n";
 					break;
 				case Material::Scatter:
+				{
 					++scatterCount;
+					//set new particle velocity
+					//!!!
+					//Calculate a new velocity unit vector
+					vector<double> newVel(3);
+
+					newVel[0] = rngVel(rng);
+					newVel[1] = rngVel(rng);
+					newVel[2] = rngVel(rng);
+
+					double norm = sqrt( (newVel[0]*newVel[0]) + 
+									    (newVel[1]*newVel[1]) + 
+									    (newVel[2]*newVel[2]) );
+
+					newVel[0] = newVel[0]/norm;
+					newVel[1] = newVel[1]/norm;
+					newVel[2] = newVel[2]/norm;
+
+					particle.setVelocity(newVel);
 					//No break, as we want scatters to update too
+				}
 				default:
 					particle.update();
 			}

@@ -2,6 +2,7 @@
 #define MACROBODY_H
 
 #include <random>
+#include <math.h>
 
 #include "Particle.h"
 #include "Settings.h"
@@ -27,13 +28,35 @@ public:
 		switch(val)
 		{
 			case Material::Absorb:
+			{
 				particle.kill();
 				break;
+			}
 			case Material::Scatter:
-				particle.scatter(rng, prob);
+			{
+
+				std::uniform_real_distribution<double> rngVel(-1.,1.);
+				std::vector<double> newVel(3);
+
+				newVel[0] = rngVel(rng);
+				newVel[1] = rngVel(rng);
+				newVel[2] = rngVel(rng);
+
+				double normNew = sqrt( (newVel[0]*newVel[0]) + 
+								       (newVel[1]*newVel[1]) + 
+								       (newVel[2]*newVel[2]) );
+
+				newVel[0] = newVel[0]/normNew;
+				newVel[1] = newVel[1]/normNew;
+				newVel[2] = newVel[2]/normNew;
+
+				particle.setVelocity(newVel);
 				break;
+			}
 			default:
+			{
 				break;
+			}
 		}
 
 		return val;
